@@ -1,5 +1,11 @@
 # Notes Annotating Web Application
 
+## How to run the app
+### `npm install`
+
+This command installs all the required node modules from npm.
+Run `npm start` after this step.
+
 ### `npm start`
 
 Runs the app in the development mode.
