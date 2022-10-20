@@ -10,3 +10,8 @@ You may also see any lint errors in the console.
 
 ## Screenshots and Features
 ![image](https://user-images.githubusercontent.com/59505795/197070611-87e485a6-8559-4ef0-8d4c-818e6f71eac0.png)
+
+![image](https://user-images.githubusercontent.com/59505795/197071492-baeee08d-f355-4a0a-9eed-d54942724f62.png)
+
+![image](https://user-images.githubusercontent.com/59505795/197071443-b30d74e8-6f0c-4ce6-994d-409195a01c76.png)
+
