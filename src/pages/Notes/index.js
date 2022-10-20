@@ -113,9 +113,14 @@ const Notes = () => {
             updateRecord={(rec) => {
               console.log({ rec });
 
-              setRecords(
-                records.map((el, ind) => (ind === selectedRecord ? rec : el))
+              let index = records.findIndex(
+                (el, ind) => ind === selectedRecord
               );
+
+              const curr = [...records];
+              curr[index] = rec;
+
+              setRecords(curr);
             }}
           />
         </div>

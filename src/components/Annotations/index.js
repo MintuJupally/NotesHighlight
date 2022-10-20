@@ -83,14 +83,12 @@ const Annotations = ({
 
                       if (!ch) return;
 
-                      console.log({
-                        ind,
-                        ann: record.annotations.splice(ind, 1),
-                      });
+                      const curr = [...record.annotations];
+                      curr.splice(ind, 1);
 
                       updateRecord({
                         ...record,
-                        annotations: record.annotations.splice(ind, 1),
+                        annotations: curr,
                       });
                     }}
                   >

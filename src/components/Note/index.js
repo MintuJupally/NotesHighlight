@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 import { CheckRounded, EditRounded } from "@mui/icons-material";
 import {
@@ -43,6 +43,10 @@ const Node = ({
 
   const [newAnnotation, setNewAnnotation] = useState(null);
 
+  useEffect(() => {
+    setNewAnnotation(null);
+  }, [record]);
+
   const saveRecord = () => {
     const text = recordText.current.value;
 
@@ -54,15 +58,34 @@ const Node = ({
     const start = selection.startContainer.parentElement;
     const end = selection.endContainer.parentElement;
 
-    console.log(start, end, recordSelection.current);
-
     if (start === end && start === recordSelection.current) {
+      let s = 0,
+        e = 0;
+
       if (selection.startContainer === selection.endContainer) {
-        if (selection.startOffset !== selection.endOffset)
-          setNewAnnotation({
-            start: selection.startOffset,
-            end: selection.endOffset,
-          });
+        if (selection.startOffset !== selection.endOffset) {
+          let a = -1;
+
+          const children = start.childNodes;
+          for (let i = 0; i < children.length; i++) {
+            if (children[i] === selection.startContainer) {
+              a = i;
+              break;
+            }
+          }
+
+          for (let i = 0; i < children.length; i++) {
+            let len = children[i].nodeName === "BR" ? 1 : children[i].length;
+
+            if (i < a) {
+              s += len;
+              e = s;
+            } else if (i === a) {
+              s += selection.startOffset;
+              e += selection.endOffset;
+            }
+          }
+        }
       } else {
         let a = -1,
           b = -1;
@@ -74,9 +97,6 @@ const Node = ({
           if (children[i] === selection.startContainer) a = i;
           else if (children[i] === selection.endContainer) b = i;
         }
-
-        let s = 0,
-          e = 0;
 
         for (let i = 0; i < children.length; i++) {
           let len = children[i].nodeName === "BR" ? 1 : children[i].length;
@@ -93,19 +113,18 @@ const Node = ({
             e += selection.endOffset;
           }
         }
-
-        setNewAnnotation({
-          start: s,
-          end: e,
-        });
       }
+
+      setNewAnnotation({
+        start: s,
+        end: e,
+      });
 
       setDialogOpen(true);
     }
   };
 
   const annotations = record?.annotations?.sort((a, b) => a.start - b.start);
-  console.log({ annotations });
 
   return (
     <div style={{ height: "100%" }}>
@@ -180,7 +199,7 @@ const Node = ({
                 overflow: "auto",
               }}
             >
-              {annotations.length === 0 ? (
+              {annotations.length === 0 || annotateMode ? (
                 <p ref={recordSelection}>{withLines(record.text)}</p>
               ) : (
                 <p ref={recordSelection}>
@@ -189,12 +208,6 @@ const Node = ({
                     if (ind > 0) {
                       start = annotations[ind - 1].end;
                     }
-
-                    console.log({
-                      ind,
-                      start: an.start,
-                      text: record.text.substring(an.start),
-                    });
 
                     return (
                       <React.Fragment key={"piece-" + ind}>
@@ -267,7 +280,6 @@ const Node = ({
           <Button
             onClick={() => {
               setDialogOpen(false);
-              setNewAnnotation(null);
 
               updateRecord({
                 ...record,
